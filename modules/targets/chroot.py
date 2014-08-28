@@ -12,7 +12,7 @@ class ChrootTarget(BaseTarget):
         self.required_files.append("path/mirror/source")
 
         # define general linux mount points
-        self.mounts = {"/proc": "/proc"}
+        self.mounts = {"/proc": "/proc","/dev/shm": "/dev/shm"}
 
         if "target/class" not in self.settings:
             return
@@ -117,7 +117,7 @@ class ChrootTarget(BaseTarget):
                 os.makedirs(wdst, 0o755)
 
             print("Mounting %s to %s ..." % (src, dst))
-            if os.system(self.cmds["mount"]+" --bind "+src+" "+wdst) != 0:
+            if os.system(self.cmds["mount"]+" --rbind "+src+" "+wdst) != 0:
                 self.unbind()
                 raise MetroError("Couldn't bind mount "+src)
 
